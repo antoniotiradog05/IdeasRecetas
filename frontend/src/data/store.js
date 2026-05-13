@@ -3,12 +3,19 @@ import { recipesExtra1 } from './recipes_extra1';
 import { recipesExtra2 } from './recipes_extra2';
 import { recipesExtra3 } from './recipes_extra3';
 
-// Combine all initial recipes
+// Combine all initial recipes and format ingredients for UI compatibility
 const INITIAL_RECIPES = [
   ...recipesExtra1,
   ...recipesExtra2,
   ...recipesExtra3
-].map((r, index) => ({ ...r, id: `init-${index}` }));
+].map((r, index) => ({ 
+  ...r, 
+  id: `init-${index}`,
+  ingredients: r.ingredients.map(ing => ({
+    ...ing,
+    ingredient: { name: ing.name, category: 'OTHER' } // UI expects ri.ingredient.name
+  }))
+}));
 
 // Local Storage Keys
 const KEYS = {

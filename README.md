@@ -24,7 +24,7 @@ npm run dev
 3. ¡Pásale el enlace a quien quieras!
 
 ---
-*Desarrollado con ❤️ para organizar la cocina familiar.*
+*Desarrollado para organizar la cocina familiar.*
 
 ---
-*Desarrollado con ❤️ para organizar la cocina familiar.*
+*Desarrollado para organizar la cocina familiar.*

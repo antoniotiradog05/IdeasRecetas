@@ -68,14 +68,23 @@ export default function Dashboard() {
     const selectedTypes = Object.entries(autoMeals)
       .filter(([, v]) => v).map(([k]) => k);
     if (selectedTypes.length === 0) return showToast('⚠️ Selecciona al menos un tipo de comida');
+    
     setAutoPlanning(true);
     setShowAutoMenu(false);
     try {
-      const { plans, message } = await autoPlanWeek(weekStart, weekEnd, selectedTypes);
-      setMealPlans(plans);
-      showToast(message);
+      // Pass the object format expected by the current api/mealplans.js
+      await autoPlanWeek({
+        startDate: weekStart,
+        endDate: weekEnd,
+        meals: autoMeals
+      });
+      // Re-load plans from localStore to update UI
+      const updatedPlans = await getMealPlans(weekStart, weekEnd);
+      setMealPlans(updatedPlans);
+      showToast('✨ Plan de la semana generado');
     } catch (e) {
-      showToast('❌ Error al planificar. ¿Tienes recetas guardadas?');
+      console.error(e);
+      showToast('❌ Error al planificar');
     } finally {
       setAutoPlanning(false);
     }

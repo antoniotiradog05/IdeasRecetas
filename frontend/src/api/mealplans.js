@@ -4,7 +4,7 @@ export const getMealPlans = async (startDate, endDate) => {
   return localStore.getMealPlans(startDate, endDate);
 };
 
-export const createMealPlan = async (planData) => {
+export const addMealPlan = async (planData) => {
   return localStore.saveMealPlan(planData);
 };
 
@@ -16,26 +16,31 @@ export const autoPlanWeek = async ({ startDate, endDate, meals }) => {
   const recipes = localStore.getRecipes();
   if (recipes.length === 0) return;
 
-  // Shuffle recipes
   const shuffled = [...recipes].sort(() => Math.random() - 0.5);
-  
-  const start = new Date(startDate);
-  const end = new Date(endDate);
   const selectedMeals = Object.entries(meals).filter(([_, v]) => v).map(([k]) => k);
   
+  // Clear existing first
   localStore.clearMealPlans(startDate, endDate);
 
+  const start = new Date(startDate + 'T00:00:00');
+  const end = new Date(endDate + 'T00:00:00');
+  let current = new Date(start);
   let recipeIdx = 0;
-  for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+
+  while (current <= end) {
+    const dateStr = current.toISOString().split('T')[0];
+    
     for (const mealType of selectedMeals) {
       const recipe = shuffled[recipeIdx % shuffled.length];
       localStore.saveMealPlan({
-        date: d.toISOString().split('T')[0],
+        date: dateStr,
         mealType,
         recipeId: recipe.id,
-        recipe: recipe // Include recipe object as expected by UI
+        recipe: recipe
       });
       recipeIdx++;
     }
+    
+    current.setDate(current.getDate() + 1);
   }
 };
