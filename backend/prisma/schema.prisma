@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./smartcart.db"
+}
+
+model Ingredient {
+  id       Int    @id @default(autoincrement())
+  name     String @unique
+  category String
+  baseUnit String
+
+  recipeIngredients RecipeIngredient[]
+}
+
+model Recipe {
+  id          Int     @id @default(autoincrement())
+  name        String
+  description String?
+  prepTime    Int?
+  servings    Int     @default(2)
+  createdAt   DateTime @default(now())
+
+  ingredients RecipeIngredient[]
+  mealPlans   MealPlan[]
+}
+
+model RecipeIngredient {
+  recipeId     Int
+  ingredientId Int
+  quantity     Float
+  unit         String
+
+  recipe     Recipe     @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  ingredient Ingredient @relation(fields: [ingredientId], references: [id])
+
+  @@id([recipeId, ingredientId])
+}
+
+model MealPlan {
+  id       Int    @id @default(autoincrement())
+  recipeId Int
+  date     String
+  mealType String
+
+  recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+}
