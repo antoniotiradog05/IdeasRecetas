@@ -1,6 +1,17 @@
-import api from './client';
-export const getRecipes = () => api.get('/recipes').then(r => r.data);
-export const getRecipe = (id) => api.get(`/recipes/${id}`).then(r => r.data);
-export const createRecipe = (data) => api.post('/recipes', data).then(r => r.data);
-export const updateRecipe = (id, data) => api.put(`/recipes/${id}`, data).then(r => r.data);
-export const deleteRecipe = (id) => api.delete(`/recipes/${id}`).then(r => r.data);
+import { localStore } from '../data/store';
+
+export const getRecipes = async () => {
+  return localStore.getRecipes();
+};
+
+export const createRecipe = async (recipeData) => {
+  return localStore.saveRecipe(recipeData);
+};
+
+export const updateRecipe = async (id, recipeData) => {
+  return localStore.saveRecipe({ ...recipeData, id });
+};
+
+export const deleteRecipe = async (id) => {
+  return localStore.deleteRecipe(id);
+};
